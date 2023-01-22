@@ -1,0 +1,16 @@
+---
+- name: Git - Definiendo code por defecto y configuraciones globales
+  git_config:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    scope: global
+  with_items:
+    - {name: user.email, value: diegobollini@protonmail.com}
+    - {name: user.name, value: diegobollini}
+    - {name: core.editor, value: code --wait}
+    - {name: diff.tool, value: default-difftool}
+    - {name: difftool.default-difftool.cmd, value: code --wait --diff \$LOCAL \$REMOTE}
+    - {name: push.default, value: nothing}
+    - {name: pull.default, value: nothing}
+    - {name: pull.ff, value: only}
+

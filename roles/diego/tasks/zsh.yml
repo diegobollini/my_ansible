@@ -1,0 +1,21 @@
+---
+# Para instalar zsh y omz. La idea es usar stow y dotfiles para el resto de la configuración, theme, plugins, etc.
+- name: zsh - Instalar
+  become: true
+  apt:
+    name: zsh
+    state: present
+
+- name: Set Zsh as default shell
+  shell: chsh -s $(which zsh) {{ remote_regular_user }}
+
+# https://github.com/cantino/mcfly
+- name: mcfly - Descargar script
+  get_url:
+    url: https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
+    dest: /tmp/mcfly_install.sh
+    mode: '+x'
+
+- name: mcfly - Instalar
+  become: true
+  script: /tmp/mcfly_install.sh --git cantino/mcfly

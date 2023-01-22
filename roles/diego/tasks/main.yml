@@ -1,0 +1,18 @@
+---
+- include_vars: ./vars.yml
+
+- block:
+  - import_tasks: packages.yml
+  - import_tasks: chrome.yml
+  - import_tasks: language.yml
+  - import_tasks: social.yml
+##  - import_tasks: branding.yml
+##  - import_tasks: ui_performance.yml
+  - import_tasks: ssh.yml
+  - import_tasks: code.yml
+  - import_tasks: python.yml
+  - import_tasks: docker.yml
+  - import_tasks: git.yml
+  - import_tasks: meld.yml
+  - import_tasks: zsh.yml
+  - import_tasks: fixes.yml
