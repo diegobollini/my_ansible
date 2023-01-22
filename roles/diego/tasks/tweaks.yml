@@ -28,6 +28,7 @@
     # https://extensions.gnome.org/extension/3968/improved-workspace-indicator/
 
 - name: Tweaks - Agregar apps al panel lateral
+  become_user: "{{ remote_regular_user }}"
   dconf:
     key: "/org/gnome/shell/favorite-apps"
     value: "['google-chrome.desktop', 'org.gnome.Nautilus.desktop', 'code.desktop','org.gnome.Terminal.desktop','org.gnome.Flameshot.desktop']"
