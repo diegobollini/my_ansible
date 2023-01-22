@@ -1,6 +1,12 @@
 ---
 - name: Fixes - Agregar apps al panel lateral
-  become_user: "{{ remote_regular_user }}"
   dconf:
     key: "/org/gnome/shell/favorite-apps"
-    value: "['google-chrome.desktop', 'org.gnome.Nautilus.desktop', 'org.kde.yakuake.desktop', 'code.desktop','org.gnome.Terminal.desktop']"
+    value: "['google-chrome.desktop', 'org.gnome.Nautilus.desktop', 'code.desktop','org.gnome.Terminal.desktop']"
+
+- name: Fixes - Minimize to click
+  become_user: "{{ remote_regular_user }}"
+  dconf:
+    key: "/org/gnome/shell/extensions/dash-to-dock/click-action"
+    value: "'minimize'"
+    state: present
