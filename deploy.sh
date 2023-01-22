@@ -33,8 +33,8 @@ echo "[PROYECTO ANSIBLE] CLONAR REPOSITORIO"
 sudo touch /var/log/ansible.log
 sudo chown -R $USER:$USER /var/log/ansible.log
 mkdir /home/$USER/proyectos/
-git clone https://github.com/diegobollini/my_ansible.git
-cd my_ansible
+git clone https://github.com/diegobollini/my_ansible.git /home/$USER/proyectos/my_ansible
+cd proyectos/my_ansible
 
 # Para ejecutar el rol base
 function launch {
