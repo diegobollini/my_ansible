@@ -85,9 +85,14 @@
 
 - name: Instalar gnome tweaks
   apt:
-    name: gnome-tweaks
+    name: "{{ packages }}"
     state: present
-  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '22.04'
+  vars:
+    packages:
+      - gnome-tweaks
+      - gnome-shell-extension-manager
+      - chrome-gnome-shell
+
 
 - name: Editor de texto, colorizer, terminal
   apt:
