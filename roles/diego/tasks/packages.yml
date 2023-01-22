@@ -71,6 +71,15 @@
       - tlp-rdw
       - acpi-call-dkms
       - powertop
+      - preload
+      - bleachbit
+      - synaptic
+
+- name: Base - Activar tlp
+  ansible.builtin.service:
+    name: tlp.service
+    state: started
+    enabled: yes
 
 - name: Base - Paquetes varios de entorno gráfico, captura de pantalla, etc.
   apt:
@@ -82,17 +91,6 @@
       - alacarte
       - fonts-firacode
       - flameshot
-
-- name: Instalar gnome tweaks
-  apt:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - gnome-tweaks
-      - gnome-shell-extension-manager
-      - chrome-gnome-shell
-
 
 - name: Editor de texto, colorizer, terminal
   apt:
