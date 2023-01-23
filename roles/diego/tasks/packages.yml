@@ -45,6 +45,7 @@
       - ufw
       - vlc
       - ffmpeg
+      - transmission-gtk
 
 - name: Base - Análisis de Hardware, información del sistema
   apt:
