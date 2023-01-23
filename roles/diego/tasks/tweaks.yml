@@ -52,13 +52,9 @@
 
 - name: Tweaks - Customizar dock
   become_user: "{{ remote_regular_user }}"
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    state: present
-  with_items:
-    - { key: "/org/gnome/shell/extensios/dash-to-dock/extend-height", value: "'false'" }
-    - { key: "/org/gnome/shell/extensios/dash-to-dock/dock-position", value: "'BOTTOM'" }
-    - { key: "/org/gnome/shell/extensios/dash-to-dock/click-action", value: "'minimize'" }
-    - { key: "/org/gnome/shell/extensios/dash-to-dock/dock-fixed", value: "'false'" }
-    - { key: "/org/gnome/shell/extensios/dash-to-dock/show-trash", value: "'false'" }
+  shell: |
+    gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
+    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
+    gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
+    gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+    gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
