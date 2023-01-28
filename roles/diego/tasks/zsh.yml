@@ -9,7 +9,7 @@
       - zsh
       - zsh-autosuggestions
       - zsh-syntax-highlighting
-      - fonts-porwerline
+      - fonts-powerline
 
 - name: zsh - Set as default shell
   become: true
@@ -32,7 +32,7 @@
     force: true
 
 - name: omz - Instalar
-  become: true
+  become_user: "{{ remote_regular_user }}"
   script: /tmp/omz_install.sh
 
 # https://github.com/cantino/mcfly
@@ -44,5 +44,5 @@
     force: true
 
 - name: mcfly - Instalar
-  become: true
-  script: /tmp/mcfly_install.sh --git cantino/mcfly
+  become_user: "{{ remote_regular_user }}"
+  script: /tmp/mcfly_install.sh --force --git cantino/mcfly

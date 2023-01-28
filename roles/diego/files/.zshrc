@@ -9,9 +9,6 @@ ZSH_THEME="cloud"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(z git zsh-syntax-highlighting zsh-autocomplete zsh-autosuggestions  vscode docker python pip history sudo dirhistory )
 
-# include Z, yo
-. ~/z.sh
-
 # User configuration
 export DEFAULT_USER="$(whoami)"
 
