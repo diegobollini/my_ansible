@@ -1,5 +1,5 @@
 ---
-- name: Tweaks - Instalar gnome tweaks
+- name: Tweaks - Instalar gnome tweaks y dependencias
   apt:
     name: "{{ packages }}"
     state: present
@@ -9,22 +9,26 @@
       - gnome-shell-extension-manager
       - chrome-gnome-shell
       - dbus-x11
+      - gnome-shell-extensions
 
 # Install the Extensions using https://github.com/cyfrost/install-gnome-extensions/
 - name: Tweaks - Descargar script para instalar gnome extensions
   get_url:
     url: https://raw.githubusercontent.com/cyfrost/install-gnome-extensions/master/install-gnome-extensions.sh
     dest: /tmp/install-gnome-extensions.sh
-    mode: '+x'
+    mode: "+x"
 
 - name: Tweaks - Instalar gnome extensions con script
   become_user: "{{ remote_regular_user }}"
-  script: /tmp/install-gnome-extensions.sh --overwrite --enable 517 744 779 1460 3968
-  changed_when: false
+  script: /tmp/install-gnome-extensions.sh --overwrite --enable 19 517 744 779 1460 3518 3968
+  changed_when:
+    false
+    # https://extensions.gnome.org/extension/19/user-themes/
     # https://extensions.gnome.org/extension/517/caffeine/
     # https://extensions.gnome.org/extension/744/hide-activities-button/
     # https://extensions.gnome.org/extension/779/clipboard-indicator/
     # https://extensions.gnome.org/extension/1460/vitals/
+    # https://extensions.gnome.org/extension/3518/transparent-shell/
     # https://extensions.gnome.org/extension/3968/improved-workspace-indicator/
 
 - name: Tweaks - Agregar apps al panel lateral
@@ -39,7 +43,6 @@
     key: "/org/gnome/shell/extensions/dash-to-dock/click-action"
     value: "'minimize'"
     state: present
-
 #- name: Create a custom shortcut for flameshot gui
 #  dconf:
 #    key: "{{ item.key }}"
@@ -49,12 +52,3 @@
 #    - { key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding", value: "'<Primary><Shift>s'" }
 #    - { key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name", value: "'flameshot'" }
 #    - { key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command", value: "'/usr/bin/flameshot gui'" }
-
-- name: Tweaks - Customizar dock
-  become_user: "{{ remote_regular_user }}"
-  shell: |
-    gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
-    gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
-    gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
