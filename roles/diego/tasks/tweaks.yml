@@ -43,12 +43,3 @@
     key: "/org/gnome/shell/extensions/dash-to-dock/click-action"
     value: "'minimize'"
     state: present
-#- name: Create a custom shortcut for flameshot gui
-#  dconf:
-#    key: "{{ item.key }}"
-#    value: "{{ item.value }}"
-#    state: present
-#  with_items:
-#    - { key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding", value: "'<Primary><Shift>s'" }
-#    - { key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name", value: "'flameshot'" }
-#    - { key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command", value: "'/usr/bin/flameshot gui'" }

@@ -19,18 +19,17 @@
 - hosts: laptop
   become: true
   tasks:
-  - name: cleanup package cache (debian and ubuntu)
-    tags: always
-    apt:
-      autoclean: yes
-    changed_when: false
+    - name: cleanup package cache (debian and ubuntu)
+      tags: always
+      apt:
+        autoclean: yes
+      changed_when: false
 
-  - name: autoremove orphan packages (debian and ubuntu)
-    tags: always
-    apt:
-      autoremove: yes
-      purge: yes
-
+    - name: autoremove orphan packages (debian and ubuntu)
+      tags: always
+      apt:
+        autoremove: yes
+        purge: yes
 # agregar cron y pull para update automático
 #  - name: Agregar ansible-pull cron job
 #    cron:
