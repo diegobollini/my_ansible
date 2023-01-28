@@ -36,7 +36,13 @@
       - numix-icon-theme-circle
     state: present
 
-- name: Mejorar performance de UI - Show seconds
+- name: Appearence - Instalar arc theme
+  apt:
+    name:
+      - arc-theme
+    state: present
+
+- name: Appearence - Personalizaciones de gnome
   become_user: "{{ remote_regular_user }}"
   dconf:
     key: "{{ item.key }}"
@@ -44,9 +50,20 @@
     state: present
   with_items:
     - { key: "/org/gnome/desktop/interface/clock-show-seconds", value: "'false'" }
-    #- { key: "/org/gnome/desktop/interface/enable-animations", value: "'false'" }
-    #- { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Adwaita-dark'" }
+    - { key: "/org/gnome/desktop/interface/enable-animations", value: "'false'" }
+    # gsettings get org.gnome.desktop.interface gtk-theme
+    - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
     - { key: "/org/gnome/desktop/interface/cursor-theme", value: "'DMZ-Black'" }
     - { key: "/org/gnome/desktop/interface/icon-theme", value: "'Numix-Circle'" }
     # Determina si el cambio entre áreas de trabajo debería suceder para las ventanas en todos los monitores o sólo para ventanas en el monitor primario.
     - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "'true'" }
+
+- name: Appearence - Customizar dock
+  become_user: "{{ remote_regular_user }}"
+  shell: |
+    gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
+    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
+    gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
+    gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+    gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
+    gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 40
