@@ -28,7 +28,7 @@
   get_url:
     url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
     dest: /tmp/omz_install.sh
-    mode: '+x'
+    mode: "+x"
     force: true
 
 - name: omz - Instalar
@@ -40,9 +40,30 @@
   get_url:
     url: https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
     dest: /tmp/mcfly_install.sh
-    mode: '+x'
+    mode: "+x"
     force: true
 
 - name: mcfly - Instalar
   become_user: "{{ remote_regular_user }}"
   script: /tmp/mcfly_install.sh --force --git cantino/mcfly
+
+- name: omz - Clonar varios plugins
+  git:
+    become_user: "{{ remote_regular_user }}"
+    repo: "{{ item.key }}"
+    dest: "{{ item.value }}"
+    clone: yes
+    update: yes
+  with_items:
+    - {
+        key: "https://github.com/zsh-users/zsh-syntax-highlighting.git",
+        value: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting",
+      }
+    - {
+        key: "https://github.com/zsh-users/zsh-autosuggestions",
+        value: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions",
+      }
+    - {
+        key: "https://github.com/zsh-users/zsh-completions",
+        value: "~/.oh-my-zsh/custom}/plugins/zsh-completions",
+      }

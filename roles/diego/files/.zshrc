@@ -7,7 +7,10 @@ ZSH_THEME="cloud"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(z git zsh-syntax-highlighting zsh-autocomplete zsh-autosuggestions  vscode docker python pip history sudo dirhistory )
+plugins=(z git zsh-syntax-highlighting zsh-autosuggestions  vscode docker python pip history sudo dirhistory zsh-completions )
+
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+source $ZSH/oh-my-zsh.sh
 
 # User configuration
 export DEFAULT_USER="$(whoami)"
