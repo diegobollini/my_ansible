@@ -75,6 +75,7 @@
       - preload
       - bleachbit
       - synaptic
+      - nala
 
 - name: Base - Activar tlp
   ansible.builtin.service:
