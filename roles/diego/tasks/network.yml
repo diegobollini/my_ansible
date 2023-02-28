@@ -1,0 +1,7 @@
+---
+- name: Set custom DNS servers in Network Manager
+  lineinfile:
+    dest: /etc/NetworkManager/NetworkManager.conf
+    regexp: "^dns=.*"
+    line: "dns=8.8.8.8,1.1.1.1"
+    state: present
