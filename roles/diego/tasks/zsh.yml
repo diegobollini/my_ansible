@@ -25,6 +25,7 @@
 
 # https://github.com/ohmyzsh/ohmyzsh
 - name: omz - Descargar script
+  become_user: "{{ remote_regular_user }}"
   get_url:
     url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
     dest: /tmp/omz_install.sh
@@ -33,7 +34,7 @@
 
 - name: omz - Instalar
   become_user: "{{ remote_regular_user }}"
-  script: /tmp/omz_install.sh
+  script: /tmp/omz_install.sh --force
 
 # https://github.com/cantino/mcfly
 - name: mcfly - Descargar script

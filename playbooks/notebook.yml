@@ -7,7 +7,7 @@
     - name: Actualizar caché
       tags: always
       apt: update_cache=yes
-      changed_when: False
+      changed_when: false
 
 # deploy roles
 - hosts: laptop
@@ -22,14 +22,14 @@
     - name: cleanup package cache (debian and ubuntu)
       tags: always
       apt:
-        autoclean: yes
+        autoclean: true
       changed_when: false
 
     - name: autoremove orphan packages (debian and ubuntu)
       tags: always
       apt:
-        autoremove: yes
-        purge: yes
+        autoremove: true
+        purge: true
 # agregar cron y pull para update automático
 #  - name: Agregar ansible-pull cron job
 #    cron:
