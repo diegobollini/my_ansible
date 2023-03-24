@@ -19,6 +19,7 @@
       - ppa-purge
       - locate
       - libxshmfence1
+  tags: packages_system
 
 - name: Base - Utilidades de compresión
   apt:
@@ -33,6 +34,7 @@
       - unzip
       - p7zip-full
       - p7zip-rar
+  tags: packages_compression
 
 - name: Base - Instalar otras aplicaciones
   apt:
@@ -46,6 +48,9 @@
       - vlc
       - ffmpeg
       - transmission-gtk
+      - indicator-multiload
+      - flameshot
+  tags: packages_other
 
 - name: Base - Análisis de Hardware, información del sistema
   apt:
@@ -61,38 +66,31 @@
       - hardinfo
       - stacer
       - screenfetch
+  tags: packages_hardware
 
 - name: Base - Performance y  rendimiento de batería
-  apt:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - tlp
-      - tlp-rdw
-      - acpi-call-dkms
-      - powertop
-      - preload
-      - bleachbit
-      - synaptic
-      - nala
+  block:
+    - name: Base - Instalar paquetes performance y  rendimiento de batería
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - tlp
+          - tlp-rdw
+          - acpi-call-dkms
+          - powertop
+          - preload
+          - bleachbit
+          - synaptic
+          - nala
 
-- name: Base - Activar tlp
-  ansible.builtin.service:
-    name: tlp.service
-    state: started
-    enabled: yes
-
-- name: Base - Paquetes varios de entorno gráfico, captura de pantalla, etc.
-  apt:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - indicator-multiload
-      - alacarte
-      - fonts-firacode
-      - flameshot
+    - name: Base - Activar tlp
+      ansible.builtin.service:
+        name: tlp.service
+        state: started
+        enabled: yes
+  tags: packages_performance
 
 - name: Editor de texto, colorizer, terminal
   apt:
@@ -106,3 +104,5 @@
       - xclip
       - bash-completion
       - yakuake
+      - fonts-firacode
+  tags: packages_dev
