@@ -1,43 +1,46 @@
 ---
-- name: Docker - Instalar dependencias
-  apt:
-    name:
-      - apt-transport-https
-      - ca-certificates
-      - curl
-      - gnupg-agent
-      - software-properties-common
-      - lsb-release
-    state: present
-
-- name: Docker - Agregar GPG
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-
-- name: Docker - Agregar repositorio
-  apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
-    state: present
-    filename: docker
-
-- name: Docker - Instalar docker y docker compose plugin
-  apt:
-    name:
-      - docker-ce
-      - docker-compose-plugin
-    update_cache: "yes"
-    state: present
-
-- name: Docker - Ejecutar comandos como root
+- name: Docker - Instar y configurar (con docker-compose)
+  tags: docker
   block:
-    - name: Docker - Crear grupo docker
-      group:
-        name: docker
+    - name: Docker - Instalar dependencias
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+          - lsb-release
         state: present
 
-    - name: Docker - Agregar users al grupo
-      user:
-        name: "{{ remote_regular_user }}"
-        groups: ["docker"]
-        append: "yes"
+    - name: Docker - Agregar GPG
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Docker - Agregar repositorio
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
+        state: present
+        filename: docker
+
+    - name: Docker - Instalar docker y docker compose plugin
+      apt:
+        name:
+          - docker-ce
+          - docker-compose-plugin
+        update_cache: "yes"
+        state: present
+
+    - name: Docker - Ejecutar comandos como root
+      block:
+        - name: Docker - Crear grupo docker
+          group:
+            name: docker
+            state: present
+
+        - name: Docker - Agregar users al grupo
+          user:
+            name: "{{ remote_regular_user }}"
+            groups: ["docker"]
+            append: "yes"
