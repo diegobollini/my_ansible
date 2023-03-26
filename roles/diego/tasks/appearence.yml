@@ -1,87 +1,95 @@
 ---
-- name: Copiar wallpaper y lockscreenfile
-  become_user: "{{ remote_regular_user }}"
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-  with_items:
-    - {
-        src: ./files/wallpaper01.jpg,
-        dest: "/home/{{ remote_regular_user }}/Pictures/wallpaper01.jpg",
-      }
-    - {
-        src: ./files/wallpaper02.jpg,
-        dest: "/home/{{ remote_regular_user }}/Pictures/wallpaper02.jpg",
-      }
-    - {
-        src: ./files/profile_picture.jpg,
-        dest: "/home/{{ remote_regular_user }}/Pictures/profile_picture.jpg",
-      }
+- name: Apariencia - Wallpaper
+  tags: appearence_wallpaper
+  block:
+    - name: Apariencia - Copiar wallpaper y lockscreenfile
+      become_user: "{{ lookup('env','USER') }}"
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - {
+            src: ./files/wallpaper01.jpg,
+            dest: "/home/{{ lookup('env','USER') }}/Pictures/wallpaper01.jpg",
+          }
+        - {
+            src: ./files/wallpaper02.jpg,
+            dest: "/home/{{ lookup('env','USER') }}/Pictures/wallpaper02.jpg",
+          }
+        - {
+            src: ./files/profile_picture.jpg,
+            dest: "/home/{{ lookup('env','USER') }}/Pictures/profile_picture.jpg",
+          }
 
-- name: Set Wallpaper
-  become_user: "{{ remote_regular_user }}"
-  dconf:
-    key: "/org/gnome/desktop/background/picture-uri"
-    value: "'file:///home/{{ remote_regular_user }}/Pictures/wallpaper01.jpg'"
-    state: present
+    - name: Apariencia - Set Wallpaper
+      become_user: "{{ lookup('env','USER') }}"
+      dconf:
+        key: "/org/gnome/desktop/background/picture-uri"
+        value: "'file:///home/{{ lookup('env','USER') }}/Pictures/wallpaper01.jpg'"
+        state: present
 
-- name: Set screensaver picture
-  become_user: "{{ remote_regular_user }}"
-  dconf:
-    key: "/org/gnome/desktop/screensaver/picture-uri"
-    value: "'file:///home/{{ remote_regular_user }}/Pictures/wallpaper02.jpg'"
-    state: present
+    - name: Apariencia - Set screensaver picture
+      become_user: "{{ lookup('env','USER') }}"
+      dconf:
+        key: "/org/gnome/desktop/screensaver/picture-uri"
+        value: "'file:///home/{{ lookup('env','USER') }}/Pictures/wallpaper02.jpg'"
+        state: present
 
-- name: Set back position
-  become_user: "{{ remote_regular_user }}"
-  dconf:
-    key: "/org/gnome/desktop/background/picture-options"
-    value: "'zoom'"
-    state: present
+    - name: Apariencia - Set back position
+      become_user: "{{ lookup('env','USER') }}"
+      dconf:
+        key: "/org/gnome/desktop/background/picture-options"
+        value: "'zoom'"
+        state: present
 
-- name: Appearence - Instalar numix icon pack
-  apt:
-    name:
-      - numix-icon-theme-circle
-    state: present
+- name: Apariencia - Gnome
+  tags: appearence_gnome
+  block:
+    - name: Apariencia - Instalar numix icon pack
+      apt:
+        name:
+          - numix-icon-theme-circle
+        state: present
 
-- name: Appearence - Instalar arc theme
-  apt:
-    name:
-      - arc-theme
-    state: present
+    - name: Apariencia - Personalizaciones de gnome
+      become_user: "{{ lookup('env','USER') }}"
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: present
+      with_items:
+        - {
+            key: "/org/gnome/desktop/interface/clock-show-seconds",
+            value: "'false'",
+          }
+        - {
+            key: "/org/gnome/desktop/interface/enable-animations",
+            value: "'false'",
+          }
+        # gsettings get org.gnome.desktop.interface gtk-theme
+        # - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
+        # - { key: "/org/gnome/desktop/interface/cursor-theme", value: "'DMZ-Black'" }
+        - {
+            key: "/org/gnome/desktop/interface/icon-theme",
+            value: "'Numix-Circle'",
+          }
+        # Determina si el cambio entre áreas de trabajo debería suceder para las ventanas en todos los monitores o sólo para ventanas en el monitor primario.
+        - {
+            key: "/org/gnome/mutter/workspaces-only-on-primary",
+            value: "'true'",
+          }
 
-- name: Appearence - Personalizaciones de gnome
-  become_user: "{{ remote_regular_user }}"
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    state: present
-  with_items:
-    - {
-        key: "/org/gnome/desktop/interface/clock-show-seconds",
-        value: "'false'",
-      }
-    - {
-        key: "/org/gnome/desktop/interface/enable-animations",
-        value: "'false'",
-      }
-    # gsettings get org.gnome.desktop.interface gtk-theme
-    - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
-    - { key: "/org/gnome/desktop/interface/cursor-theme", value: "'DMZ-Black'" }
-    - {
-        key: "/org/gnome/desktop/interface/icon-theme",
-        value: "'Numix-Circle'",
-      }
-    # Determina si el cambio entre áreas de trabajo debería suceder para las ventanas en todos los monitores o sólo para ventanas en el monitor primario.
-    - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "'true'" }
-
-- name: Appearence - Customizar dock
-  become_user: "{{ remote_regular_user }}"
-  shell: |
-    gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
-    gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
-    gsettings set org.gnome.shell.extensions.dash-to-dock show-trash false
-    gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 40
+    - name: Apariencia - Theme (ubuntu)
+      when: ansible_distribution == 'Ubuntu'
+      become_user: "{{ lookup('env','USER') }}"
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value }}"
+        state: present
+      with_items:
+        # gsettings get org.gnome.desktop.interface gtk-theme
+        - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
+        - {
+            key: "/org/gnome/desktop/interface/cursor-theme",
+            value: "'DMZ-Black'",
+          }
