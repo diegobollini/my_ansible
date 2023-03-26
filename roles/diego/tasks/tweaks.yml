@@ -1,45 +1,52 @@
 ---
-- name: Tweaks - Instalar gnome tweaks y dependencias
-  apt:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-      - gnome-tweaks
-      - gnome-shell-extension-manager
-      - chrome-gnome-shell
-      - dbus-x11
-      - gnome-shell-extensions
+- name: Tweaks - Extensiones Gnome
+  tags: extensions
+  block:
+    - name: Tweaks - Instalar gnome tweaks y dependencias
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - gnome-tweaks
+          - gnome-shell-extension-manager
+          - chrome-gnome-shell
+          - dbus-x11
+          - gnome-shell-extensions
 
-# Install the Extensions using https://github.com/cyfrost/install-gnome-extensions/
-- name: Tweaks - Descargar script para instalar gnome extensions
-  get_url:
-    url: https://raw.githubusercontent.com/cyfrost/install-gnome-extensions/master/install-gnome-extensions.sh
-    dest: /tmp/install-gnome-extensions.sh
-    mode: "+x"
+    # Install the Extensions using https://github.com/cyfrost/install-gnome-extensions/
+    - name: Tweaks - Descargar script para instalar gnome extensions
+      get_url:
+        url: https://raw.githubusercontent.com/cyfrost/install-gnome-extensions/master/install-gnome-extensions.sh
+        dest: /tmp/install-gnome-extensions.sh
+        mode: "+x"
 
-- name: Tweaks - Instalar gnome extensions con script
-  become_user: "{{ remote_regular_user }}"
-  script: /tmp/install-gnome-extensions.sh --overwrite --enable 19 517 744 779 1460 3518 3968
-  changed_when:
-    false
-    # https://extensions.gnome.org/extension/19/user-themes/
-    # https://extensions.gnome.org/extension/517/caffeine/
-    # https://extensions.gnome.org/extension/744/hide-activities-button/
-    # https://extensions.gnome.org/extension/779/clipboard-indicator/
-    # https://extensions.gnome.org/extension/1460/vitals/
-    # https://extensions.gnome.org/extension/3518/transparent-shell/
-    # https://extensions.gnome.org/extension/3968/improved-workspace-indicator/
+    - name: Tweaks - Instalar gnome extensions con script
+      become_user: "{{ remote_regular_user }}"
+      script: /tmp/install-gnome-extensions.sh --overwrite --enable 19 517 744 779 1460 3518 3968
+      changed_when:
+        false
+        # https://extensions.gnome.org/extension/19/user-themes/
+        # https://extensions.gnome.org/extension/517/caffeine/
+        # https://extensions.gnome.org/extension/744/hide-activities-button/
+        # https://extensions.gnome.org/extension/779/clipboard-indicator/
+        # https://extensions.gnome.org/extension/1460/vitals/
+        # https://extensions.gnome.org/extension/3518/transparent-shell/
+        # https://extensions.gnome.org/extension/3968/improved-workspace-indicator/
 
-- name: Tweaks - Agregar apps al panel lateral
-  become_user: "{{ remote_regular_user }}"
-  dconf:
-    key: "/org/gnome/shell/favorite-apps"
-    value: "['google-chrome.desktop', 'org.gnome.Nautilus.desktop', 'code.desktop','org.gnome.Terminal.desktop','org.gnome.Flameshot.desktop']"
+- name: Tweaks - Dock y favoritos
+  block:
+    - name: Tweaks - Agregar apps al panel lateral
+      become_user: "{{ remote_regular_user }}"
+      dconf:
+        key: "/org/gnome/shell/favorite-apps"
+        value: "['google-chrome.desktop', 'org.gnome.Nautilus.desktop', 'code.desktop','org.gnome.Terminal.desktop','org.gnome.Flameshot.desktop']"
 
-- name: Tweaks - Minimize to click
-  become_user: "{{ remote_regular_user }}"
-  dconf:
-    key: "/org/gnome/shell/extensions/dash-to-dock/click-action"
-    value: "'minimize'"
-    state: present
+    - name: Tweaks - Minimize to click
+      become_user: "{{ remote_regular_user }}"
+      dconf:
+        key: "/org/gnome/shell/extensions/dash-to-dock/click-action"
+        value: "'minimize'"
+        state: present
+  when: ansible_distribution == 'Ubuntu'
+  tags: dock
