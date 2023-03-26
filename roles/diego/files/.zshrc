@@ -1,6 +1,6 @@
-export ZSH="$HOME/.oh_my_zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
-ZSH_THEME="cloud"
+ZSH_THEME="agnoster"
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
@@ -15,10 +15,14 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 export DEFAULT_USER="$(whoami)"
 
-alias upd='sudo apt update'
-alias upg='sudo apt upgrade'
+alias upd='sudo nala update'
+alias upg='sudo nala upgrade'
 alias untar='tar -zxvf' # Unpack .tar file
 
 # McFly - fly through your shell history
 # https://github.com/cantino/mcfly
 eval "$(mcfly init zsh)"
+
+# Configuración de Powerline fonts e iconos
+POWERLEVEL9K_MODE='nerdfont-complete'
+POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
