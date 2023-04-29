@@ -14,10 +14,10 @@
           - dbus-x11
           - gnome-shell-extensions
 
-    # Install the Extensions using https://github.com/cyfrost/install-gnome-extensions/
+    # Install the Extensions using https://github.com/ToasterUwU/install-gnome-extensions
     - name: Tweaks - Descargar script para instalar gnome extensions
       get_url:
-        url: https://raw.githubusercontent.com/cyfrost/install-gnome-extensions/master/install-gnome-extensions.sh
+        url: https://raw.githubusercontent.com/ToasterUwU/install-gnome-extensions/master/install-gnome-extensions.sh
         dest: /tmp/install-gnome-extensions.sh
         mode: "+x"
 
