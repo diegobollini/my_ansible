@@ -9,7 +9,6 @@
       vars:
         packages:
           - gnome-tweaks
-          - gnome-shell-extension-manager
           - chrome-gnome-shell
           - dbus-x11
           - gnome-shell-extensions

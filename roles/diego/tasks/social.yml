@@ -7,8 +7,7 @@
     state: present
 
 - name: Social - Instalar discord
-  tags: discord
-  become: true
-  apt:
-    name: discord
+  tags: social_discord
+  community.general.flatpak:
+    name: com.discordapp.Discord
     state: present

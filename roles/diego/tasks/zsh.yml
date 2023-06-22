@@ -31,7 +31,7 @@
   tags: omz
   block:
     - name: omz - Descargar script
-      become_user: "{{ lookup('env','USER') }}"
+      #become_user: "{{ lookup('env','USER') }}"
       get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
         dest: /tmp/omz_install.sh
@@ -56,7 +56,7 @@
 
     - name: omz - Clonar varios plugins
       git:
-        become_user: "{{ lookup('env','USER') }}"
+        #become_user: "{{ lookup('env','USER') }}"
         repo: "{{ item.key }}"
         dest: "{{ item.value }}"
         clone: yes

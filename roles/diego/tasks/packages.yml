@@ -5,10 +5,8 @@
     state: present
   vars:
     packages:
-      - htop
       - mc
       - tmux
-      - ubuntu-restricted-extras
       - apt-transport-https
       - curl
       - wget
@@ -16,7 +14,6 @@
       - openssh-server
       - jq
       - tldr
-      - ppa-purge
       - locate
       - libxshmfence1
   tags: packages_system
@@ -30,10 +27,8 @@
       - zip
       - gzip
       - tar
-      - unrar
       - unzip
       - p7zip-full
-      - p7zip-rar
   tags: packages_compression
 
 - name: Base - Instalar otras aplicaciones
@@ -48,9 +43,25 @@
       - vlc
       - ffmpeg
       - transmission-gtk
-      - indicator-multiload
       - flameshot
   tags: packages_other
+
+- name: Base - Instalar flatpak
+  tags: packages_flatpak
+  block:
+    - name: Base - Instalar flatpak y dependencias
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - flatpak
+          - gnome-software-plugin-flatpak
+
+    - name: Add Flatpak remote
+      become_user: "{{ remote_regular_user }}"
+      command:
+        cmd: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 - name: Base - Análisis de Hardware, información del sistema
   apt:
@@ -65,7 +76,9 @@
       - mtr
       - hardinfo
       - stacer
-      - screenfetch
+      - neofetch
+      - bpytop
+      - fzf
   tags: packages_hardware
 
 - name: Base - Performance y  rendimiento de batería
@@ -106,3 +119,13 @@
       - yakuake
       - fonts-firacode
   tags: packages_dev
+
+- name: Desinstalar programas y paquetes que no uso
+  apt:
+    name: "{{ packages }}"
+    state: absent
+  vars:
+    packages:
+      - evolution
+      - rhythmbox
+  tags: packages_remove

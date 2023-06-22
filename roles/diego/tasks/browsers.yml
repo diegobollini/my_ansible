@@ -19,13 +19,12 @@
         name: google-chrome-stable
 
 - name: Browsers - Instalar Firefox (no snap)
-  when: ansible_distribution == 'Ubuntu'
   tags: firefox
   block:
-    - name: Browsers - Desinstalar firefox snap
-      snap:
-        name: firefox
-        state: absent
+    - name: Browsers - Dependencias Firefox
+      become: true
+      apt:
+        name: libdbus-glib-1-2:amd64
 
     - name: Browsers - Descargar firefox
       become: true

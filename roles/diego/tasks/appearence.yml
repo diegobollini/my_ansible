@@ -10,29 +10,31 @@
       with_items:
         - {
             src: ./files/wallpaper01.jpg,
-            dest: "/home/{{ lookup('env','USER') }}/Pictures/wallpaper01.jpg",
+            dest: "/home/{{ lookup('env','USER') }}/Imágenes/wallpaper01.jpg",
           }
         - {
             src: ./files/wallpaper02.jpg,
-            dest: "/home/{{ lookup('env','USER') }}/Pictures/wallpaper02.jpg",
+            dest: "/home/{{ lookup('env','USER') }}/Imágenes/wallpaper02.jpg",
           }
         - {
             src: ./files/profile_picture.jpg,
-            dest: "/home/{{ lookup('env','USER') }}/Pictures/profile_picture.jpg",
+            dest: "/home/{{ lookup('env','USER') }}/Imágenes/profile_picture.jpg",
           }
 
+      # También se puede ejecutar manualmente, por ejemplo
+      # $ gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/.wallpaper.jpg
     - name: Apariencia - Set Wallpaper
       become_user: "{{ lookup('env','USER') }}"
       dconf:
         key: "/org/gnome/desktop/background/picture-uri"
-        value: "'file:///home/{{ lookup('env','USER') }}/Pictures/wallpaper01.jpg'"
+        value: "'file:///home/{{ lookup('env','USER') }}/Imágenes/wallpaper01.jpg'"
         state: present
 
     - name: Apariencia - Set screensaver picture
       become_user: "{{ lookup('env','USER') }}"
       dconf:
         key: "/org/gnome/desktop/screensaver/picture-uri"
-        value: "'file:///home/{{ lookup('env','USER') }}/Pictures/wallpaper02.jpg'"
+        value: "'file:///home/{{ lookup('env','USER') }}/Imágenes/wallpaper02.jpg'"
         state: present
 
     - name: Apariencia - Set back position
@@ -40,6 +42,13 @@
       dconf:
         key: "/org/gnome/desktop/background/picture-options"
         value: "'zoom'"
+        state: present
+
+    - name: Apariencia - Botones (minimizar, maximizar)
+      become_user: "{{ lookup('env','USER') }}"
+      dconf:
+        key: "/org/gnome/desktop/wm/preferences"
+        value: "'minimize,maximize,close'"
         state: present
 
 - name: Apariencia - Gnome
@@ -77,19 +86,4 @@
         - {
             key: "/org/gnome/mutter/workspaces-only-on-primary",
             value: "'true'",
-          }
-
-    - name: Apariencia - Theme (ubuntu)
-      when: ansible_distribution == 'Ubuntu'
-      become_user: "{{ lookup('env','USER') }}"
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: present
-      with_items:
-        # gsettings get org.gnome.desktop.interface gtk-theme
-        - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
-        - {
-            key: "/org/gnome/desktop/interface/cursor-theme",
-            value: "'DMZ-Black'",
           }

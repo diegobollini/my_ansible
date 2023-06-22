@@ -2,14 +2,6 @@
 - name: Idioma - Agregar y configurar es
   tags: language
   block:
-    - name: Idioma - Completar instalación de "es"
-      apt:
-        pkg:
-          - language-pack-es
-          - language-pack-gnome-es
-          - language-pack-es-base
-          - language-pack-gnome-es-base
-
     - name: Idioma - Validar que locale existe
       locale_gen:
         name: es_ES.UTF-8

@@ -1,11 +1,11 @@
 # Laboratorio Ansible
 
-Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es que funcione en Ubuntu, Linux Mint y PopOS [al fin y al cabo son lo mismo (?)].
+Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es que funcione en Ubuntu, Linux Mint, PopOS y Debian12.
 
 ## Equipo
 
 ```test
-OS: Pop!_OS 22.04 LTS
+OS: Debian GNU/Linux 12 (bookworm)
 Kernel: x86_64 Linux 5.15.0-58-generic
 Disk: 256G
 CPU: 11th Gen Intel Core i5-1135G7 @ 8x 4,2GHz
@@ -55,6 +55,7 @@ $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
   - packages_system
   - packages_compression
   - packages_other
+  - packages_flatpak
   - packages_hardware
   - packages_performance
   - packages_dev
