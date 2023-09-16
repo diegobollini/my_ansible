@@ -40,3 +40,9 @@ POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+
+export MCFLY_RESULTS=20
+
+# Alias locos
+alias update_firefox='wget -O - "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=es-ES" | sudo tar --overwrite -xjf - -C /opt/ && sudo ln -sf /opt/firefox/firefox /usr/local/bin/firefox'
