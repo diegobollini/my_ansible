@@ -13,24 +13,17 @@
           - lsb-release
         state: present
 
-    - name: Docker - Agregar GPG
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+    - name: Download Docker installation script if not exist
+      get_url:
+        url: https://get.docker.com/
+        dest: /tmp/install_docker.sh
+        validate_certs: no
+      when: not ansible.builtin.path.exists('/tmp/install_docker.sh')
 
-    - name: Docker - Agregar repositorio
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
-        state: present
-        filename: docker
-
-    - name: Docker - Instalar docker y docker compose plugin
-      apt:
-        name:
-          - docker-ce
-          - docker-compose-plugin
-        update_cache: "yes"
-        state: present
+    - name: Run Docker installation script
+      become: true
+      script:
+        script: /tmp/install_docker.sh
 
     - name: Docker - Ejecutar comandos como root
       block:
