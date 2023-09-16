@@ -1,10 +1,10 @@
 # Laboratorio Ansible
 
-Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es que funcione en Ubuntu, Linux Mint, PopOS y Debian12.
+Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es que funcione en Ubuntu, Linux Mint, PopOS y Debian12. Esta branch es para usar en Debian12.
 
 ## Equipo
 
-```test
+```code
 OS: Debian GNU/Linux 12 (bookworm)
 Kernel: x86_64 Linux 5.15.0-58-generic
 Disk: 256G
@@ -13,10 +13,21 @@ GPU: Mesa Intel(R) Xe Graphics (TGL GT2)
 RAM: 15653MiB
 ```
 
+## sudoers en Debian12
+
+```bash
+$ sudo su
+usermod -aG sudo diego
+apt install sudo
+apt upgrade
+nano /etc/sudoers
+```
+
 ## Preparación
 
 ```bash
-# Probando deploy con script
+# Esto es más bien funcional --> Software & Updates: Activar contrib & non-free
+# Deploy con script
 $ sudo apt install curl
 $ bash -c "$(curl -fsSL https://raw.githubusercontent.com/diegobollini/my_ansible/master/deploy.sh)"
 $ sudo bash launch_project.sh
@@ -51,6 +62,7 @@ $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
 
 ## Tareas y tags
 
+```text
 - packages
   - packages_system
   - packages_compression
@@ -93,6 +105,7 @@ $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
 - tweaks
   - extensions
   - dock
+```
 
 ## Testeando con [vagrant](vagrantup.com)
 
