@@ -8,7 +8,6 @@
       - htop
       - mc
       - tmux
-      - ubuntu-restricted-extras
       - apt-transport-https
       - curl
       - wget
@@ -16,7 +15,6 @@
       - openssh-server
       - jq
       - tldr
-      - ppa-purge
       - locate
       - libxshmfence1
   tags: packages_system
@@ -48,7 +46,6 @@
       - vlc
       - ffmpeg
       - transmission-gtk
-      - indicator-multiload
       - flameshot
   tags: packages_other
 
@@ -83,7 +80,7 @@
           - preload
           - bleachbit
           - synaptic
-          - nala
+#          - nala
 
     - name: Base - Activar tlp
       ansible.builtin.service:

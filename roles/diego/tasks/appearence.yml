@@ -59,17 +59,6 @@
         state: present
       with_items:
         - {
-            key: "/org/gnome/desktop/interface/clock-show-seconds",
-            value: "'false'",
-          }
-        - {
-            key: "/org/gnome/desktop/interface/enable-animations",
-            value: "'false'",
-          }
-        # gsettings get org.gnome.desktop.interface gtk-theme
-        # - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
-        # - { key: "/org/gnome/desktop/interface/cursor-theme", value: "'DMZ-Black'" }
-        - {
             key: "/org/gnome/desktop/interface/icon-theme",
             value: "'Numix-Circle'",
           }
@@ -79,17 +68,3 @@
             value: "'true'",
           }
 
-    - name: Apariencia - Theme (ubuntu)
-      when: ansible_distribution == 'Ubuntu'
-      become_user: "{{ lookup('env','USER') }}"
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: present
-      with_items:
-        # gsettings get org.gnome.desktop.interface gtk-theme
-        - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
-        - {
-            key: "/org/gnome/desktop/interface/cursor-theme",
-            value: "'DMZ-Black'",
-          }

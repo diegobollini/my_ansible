@@ -2,22 +2,21 @@
 - name: Idioma - Agregar y configurar es
   tags: language
   block:
-    - name: Idioma - Completar instalación de "es"
-      apt:
-        pkg:
-          - language-pack-es
-          - language-pack-gnome-es
-          - language-pack-es-base
-          - language-pack-gnome-es-base
+    # - name: Idioma - Completar instalación de "es"
+    #   apt:
+    #     pkg:
+    #          - language-pack-es
+    #          - language-pack-gnome-es
+    #          - language-pack-es-base
+    #          - language-pack-gnome-es-base
 
     - name: Idioma - Validar que locale existe
       locale_gen:
         name: es_ES.UTF-8
         state: present
-
-    - name: Idioma - Configurar layouts de teclado
-      become_user: "{{ remote_regular_user }}"
-      dconf:
-        key: "/org/gnome/desktop/input-sources/sources"
-        value: "[('xkb', 'es')]"
-        state: present
+#    - name: Idioma - Configurar layouts de teclado
+#      become_user: "{{ remote_regular_user }}"
+#      dconf:
+#        key: "/org/gnome/desktop/input-sources/sources"
+#        value: "[('xkb', 'es')]"
+#        state: present
