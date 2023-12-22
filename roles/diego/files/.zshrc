@@ -24,8 +24,8 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 export DEFAULT_USER="$(whoami)"
 
-alias upd='sudo nala update'
-alias upg='sudo nala upgrade'
+alias upd='sudo apt update'
+alias upg='sudo apt upgrade'
 alias untar='tar -zxvf' # Unpack .tar file
 
 # McFly - fly through your shell history
