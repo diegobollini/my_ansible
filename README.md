@@ -1,12 +1,12 @@
 # Laboratorio Ansible
 
-Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es que funcione en Ubuntu, Linux Mint y PopOS [al fin y al cabo son lo mismo (?)].
+Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es adaptarlo a las distintas distros que voy usando (Ubuntu, Linux Mint, Linux Mint Debian, PopOS, etc., al fin y al cabo son lo mismo).
 
 ## Equipo
 
 ```test
-OS: Pop!_OS 22.04 LTS
-Kernel: x86_64 Linux 5.15.0-58-generic
+OS: LMDE 6 Faye
+Kernel: x86_64 Linux 6.1.0-16-amd64
 Disk: 256G
 CPU: 11th Gen Intel Core i5-1135G7 @ 8x 4,2GHz
 GPU: Mesa Intel(R) Xe Graphics (TGL GT2)
@@ -26,7 +26,7 @@ $ sudo bash launch_project.sh
 
 ```bash
 # Dependencias
-$ apt install python3-setuptools ansible git stow
+$ apt install python3-setuptools ansible git
 # Clonar repositorio con playbooks, tasks, etc.
 $ git clone https://github.com/diegobollini/my_ansible && cd my_ansible
 # Deployar rol
@@ -47,6 +47,8 @@ $ git config --global user.email diegobollini@protonmail.com
 $ gh auth login
 $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
 # Validar: https://github.com/diegobollini.keys
+# Instalar atuin (search shell history)
+$ bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
 ```
 
 ## Tareas y tags
@@ -92,38 +94,3 @@ $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
 - tweaks
   - extensions
   - dock
-
-## Testeando con [vagrant](vagrantup.com)
-
-- [Discover Vagrant Boxes](https://app.vagrantup.com/boxes/search)
-- Levantar, ejecutar, acceder, etc.:
-
-```sh
-$ vagrant init generic/ubuntu2204
-$ vagrant up
-$ vagrant ssh
-$ logout
-$ vagrant box list
-generic/ubuntu2204 (virtualbox, 4.1.10)
-#
-$ vagrant snapshot save [vm-name] NAME
-$ vagrant snapshot save default ubuntu2204
-==> default: Snapshotting the machine as 'ubuntu2204'...
-$ vagrant snapshot restore [vm-name] NAME
-$ vagrant snapshot restore default vm_2204
-#
-$ vagrant snapshot list
-==> default:
-ubuntu2204
-$ vagrant global-status
-id       name    provider   state  directory
------------------------------------------------------------------------
-b3fafcb  default virtualbox saved  /.../ansible
-#
-$ vagrant snapshot push
-$ vagrant snapshot pop
-#
-$ vagrant destroy
-$ vagrant box list
-$ vagrant box remove hashicorp/bionic64
-```
