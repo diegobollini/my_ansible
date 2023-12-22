@@ -42,18 +42,6 @@
       become_user: "{{ lookup('env','USER') }}"
       script: /tmp/omz_install.sh --force
 
-    # https://github.com/cantino/mcfly
-    - name: mcfly - Descargar script
-      get_url:
-        url: https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
-        dest: /tmp/mcfly_install.sh
-        mode: "+x"
-        force: true
-
-    - name: mcfly - Instalar
-      become_user: "{{ lookup('env','USER') }}"
-      script: /tmp/mcfly_install.sh --force --git cantino/mcfly
-
     - name: omz - Clonar varios plugins
       git:
         become_user: "{{ lookup('env','USER') }}"
