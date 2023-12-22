@@ -15,8 +15,8 @@ sudo apt-get -y update
 sudo apt-get -y upgrade
 
 # Instalar requerimientos
-echo "[PREPARAR NOTEBOOK] INSTALAR GIT Y STOW"
-sudo apt-get install -y git stow
+echo "[PREPARAR NOTEBOOK] INSTALAR GIT"
+sudo apt-get install -y git
 
 # Instalar dependencias de Ansible
 echo '[PREPARAR NOTEBOOK] INSTALAR DEPENDENCIAS'

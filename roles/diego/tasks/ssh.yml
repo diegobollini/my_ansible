@@ -8,8 +8,8 @@
         path: "{{ item }}"
         state: directory
       with_items:
-        - "{{ ansible_env.HOME }}/.ssh"
-        - "{{ ansible_env.HOME }}/.ssh/config"
+        - "/home/{{ lookup('env','USER') }}/.ssh"
+        - "/home/{{ lookup('env','USER') }}/.ssh/config"
 
     - name: SSH - Copiar llave pública
       copy:
