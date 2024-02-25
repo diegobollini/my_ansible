@@ -1,8 +1,8 @@
 ---
-- name: Docker - Instar y configurar (con docker-compose)
-  tags: docker
+- name: Docker - Install and configure (with docker-compose)
+  become: true
   block:
-    - name: Docker - Instalar dependencias
+    - name: Docker - Install dependencies
       apt:
         name:
           - apt-transport-https
@@ -13,34 +13,49 @@
           - lsb-release
         state: present
 
-    - name: Docker - Agregar GPG
-      apt_key:
+    - name: Download Docker GPG key
+      get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+        dest: /usr/share/keyrings/docker-archive-keyring.gpg
+      register: gpg_key_download
 
-    - name: Docker - Agregar repositorio
+    - name: Ensure Docker GPG key is downloaded
+      fail:
+        msg: "Failed to download Docker GPG key"
+      when: gpg_key_download.failed
+
+    - name: Import Docker GPG key
+      apt_key:
+        keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+        id: 0EBFCD88
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Docker - Add Docker repository
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
+        repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable
         state: present
         filename: docker
 
-    - name: Docker - Instalar docker y docker compose plugin
+    - name: Install Docker and Docker Compose
       apt:
         name:
           - docker-ce
           - docker-compose-plugin
-        update_cache: "yes"
+        update_cache: yes
         state: present
 
-    - name: Docker - Ejecutar comandos como root
+    - name: Docker - Execute commands as root
       block:
-        - name: Docker - Crear grupo docker
+        - name: Docker - Create docker group
           group:
             name: docker
             state: present
 
-        - name: Docker - Agregar users al grupo
+        - name: Docker - Add users to the docker group
           user:
-            name: "{{ remote_regular_user }}"
+            name: "{{ ansible_env.SUDO_USER }}"
             groups: ["docker"]
-            append: "yes"
+            append: yes
