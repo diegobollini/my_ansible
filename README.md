@@ -1,6 +1,6 @@
 # Laboratorio Ansible
 
-Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es adaptarlo a las distintas distros que voy usando (Ubuntu, Linux Mint, Linux Mint Debian, PopOS, etc., al fin y al cabo son lo mismo).
+Proyecto de Ansible (experimental y de aprendizaje) para automatizar la preparación de mi notebook personal. La idea (o intención) es adaptarlo a las distintas distros que voy usando (Ubuntu, Linux Mint, Linux Mint Debian, PopOS, etc., al fin y al cabo se parecen).
 
 ## Equipo
 

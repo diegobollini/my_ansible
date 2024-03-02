@@ -3,10 +3,10 @@
 ###############################################################################
 # Script Name: deploy.sh
 # Developer: Diego Bollini
-# Description: This script is used to setup ansible on a fresh installation of
-#              Ubuntu 22.04 in my personal notebook. It updates the system,
-#              installs ansible and git, and clone and apply an ansible role.
-# Technologies: Bash, Ubuntu, Ansible, Git, Python, Kubernetes
+# Description: This script is used to setup and launch an ansible role on a
+# fresh installation of different / similar SO in my personal notebook.
+# It updates the system, installs ansible and git, and clone and apply an
+# ansible role.
 ###############################################################################
 
 # Actualizar sistema
