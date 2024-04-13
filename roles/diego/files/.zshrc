@@ -24,13 +24,15 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 export DEFAULT_USER="$(whoami)"
 
+# Some magical alias
 alias upd='sudo apt update'
 alias upg='sudo apt upgrade'
 alias untar='tar -zxvf' # Unpack .tar file
+alias stremio-play='docker run --rm -d -p 11470:11470 -p 12470:12470 -e NO_CORS=1 stremio/server:latest'
 
 # atuin - ✨ Magical shell history 
 # https://github.com/atuinsh/atuin#install
-eval "$(atuin init zsh)"
+# eval "$(atuin init zsh)" # Empiezo a usar warp
 
 # # Configuración de Powerline fonts e iconos
 # POWERLEVEL9K_MODE='nerdfont-complete'
@@ -40,3 +42,7 @@ eval "$(atuin init zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Install Ruby Gems to ~/gems
+export GEM_HOME="$HOME/gems"
+export PATH="$HOME/gems/bin:$PATH"
