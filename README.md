@@ -47,8 +47,6 @@ $ git config --global user.email diegobollini@protonmail.com
 $ gh auth login
 $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
 # Validar: https://github.com/diegobollini.keys
-# Instalar atuin (search shell history)
-$ bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
 ```
 
 ## Tareas y tags
@@ -66,8 +64,8 @@ $ bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
 - language
   - language
 - social
-  - telegram
-  - discord
+  - ~~telegram~~
+  - ~~discord~~
 - appearence
   - appearence_wallpaper
   - appearence_gnome
@@ -86,11 +84,8 @@ $ bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
   - meld
 - zsh
   - zsh
-  - omz (y plugins varios)
+  - omz
 - security
   - ufw
 - network
   - dns
-- tweaks
-  - extensions
-  - dock
