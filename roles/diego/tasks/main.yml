@@ -2,18 +2,16 @@
 - include_vars: ./vars.yml
 
 - block:
-    - import_tasks: packages.yml
-    - import_tasks: browsers.yml
-    - import_tasks: language.yml
-    - import_tasks: social.yml
-    - import_tasks: appearence.yml
-    - import_tasks: ssh.yml
-    - import_tasks: code.yml
-    - import_tasks: python.yml
-    - import_tasks: docker.yml
-    - import_tasks: git.yml
-    - import_tasks: meld.yml
-    - import_tasks: zsh.yml
-    - import_tasks: security.yml
-    - import_tasks: network.yml
-    - import_tasks: tweaks.yml
+      - import_tasks: packages.yml
+      - import_tasks: browsers.yml
+      - import_tasks: language.yml
+      - import_tasks: appearence.yml
+      - import_tasks: ssh.yml
+      - import_tasks: code.yml
+      - import_tasks: python.yml
+      - import_tasks: docker.yml
+      - import_tasks: git.yml
+      - import_tasks: meld.yml
+      - import_tasks: zsh.yml
+      - import_tasks: security.yml
+      - import_tasks: network.yml
