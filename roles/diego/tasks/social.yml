@@ -1,7 +1,0 @@
----
-#- name: Social - Instalar discord
-#  tags: discord
-#  become: true
-#  apt:
-#    name: discord
-#    state: present
