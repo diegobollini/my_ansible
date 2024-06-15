@@ -80,7 +80,7 @@
           - preload
           - bleachbit
           - synaptic
-#          - nala
+    #          - nala
 
     - name: Base - Activar tlp
       ansible.builtin.service:
@@ -100,6 +100,5 @@
       - tmuxp
       - xclip
       - bash-completion
-      - yakuake
       - fonts-firacode
   tags: packages_dev
