@@ -60,6 +60,13 @@ $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
 # Validar: https://github.com/diegobollini.keys
 ```
 
+- instalar y configurar timeshift
+- agregar botón para minimizar desde Tweaks
+- quitar resultados de búsqueda en Settings > Search
+- agregar custom DNS (8.8.8.8,1.1.1.1)
+- night light y color temperature
+- descargar theme de gnome-look.org y copiar a carpeta ~/.themes
+
 ## Tareas y tags
 
 ```text
@@ -71,9 +78,8 @@ $ gh ssh-key add /home/diego/.ssh/private_key_diego.pub
   - packages_hardware
   - packages_performance
   - packages_dev
+  - libreoffice
 - browsers
-  - chrome
-  - firefox (ubuntu)
 - language
   - language
 - social

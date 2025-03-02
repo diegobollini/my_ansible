@@ -1,15 +1,16 @@
 ---
-- name: Idioma - Agregar y configurar es
+- name: Idiomas - Completar instalación
   tags: language
   block:
-    - name: Idioma - Validar que locale existe
+    - name: Idiomas - Validar que locale existe
       locale_gen:
         name: es_ES.UTF-8
         state: present
 
-    - name: Idioma - Configurar layouts de teclado
-      become_user: "{{ remote_regular_user }}"
+    - name: Idiomas - Configurar layouts de teclado
+      become_method: sudo
+      become_user: "{{ lookup('env','USER') }}"
       dconf:
         key: "/org/gnome/desktop/input-sources/sources"
-        value: "[('xkb', 'es')]"
+        value: "[('xkb', 'es'), ('xkb', 'us+intl')]"
         state: present

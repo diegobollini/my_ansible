@@ -96,14 +96,8 @@
           - preload
           - bleachbit
           - synaptic
+          - timeshift
           - nala
-
-    - name: Base - Activar tlp
-      ansible.builtin.service:
-        name: tlp.service
-        state: started
-        enabled: yes
-  tags: packages_performance
 
 - name: Editor de texto, colorizer, terminal
   apt:
@@ -116,7 +110,6 @@
       - tmuxp
       - xclip
       - bash-completion
-      - yakuake
       - fonts-firacode
   tags: packages_dev
 
@@ -126,6 +119,43 @@
     state: absent
   vars:
     packages:
-      - evolution
+      - thunderbird
       - rhythmbox
+      - remmina
+      - gnome-games
+      - gnome-maps
+      - gnome-weather
+      - gnome-calendar
+      - firefox-esr
+      - libreoffice-help-en-us
+      - libreoffice-impress
+      - libreoffice-base-core
+      - libreoffice-math
+      - libreoffice-calc
+      - libreoffice-style-colibre
+      - libreoffice-common
+      - libreoffice-style-elementary
+      - libreoffice-core
+      - libreoffice-writer
+      - libreoffice-draw
+      - libreoffice-gnome
+      - libreoffice-gtk3
+      - libreoffice-help-common
   tags: packages_remove
+
+- name: Instalar LibreOffice
+  flatpak:
+    name: org.libreoffice.LibreOffice
+    state: present
+    remote: flathub
+  tags: libreoffice
+
+# Para instalar paquetes del repositorio backport:
+# apt install -t bookworm-backports package-name
+- name: Crear índice para agregar repositorios backport
+  template:
+    src: ./files/debian-12-backports.list.j2
+    dest: /etc/apt/sources.list.d/debian-12-backports.list
+    owner: root
+    group: root
+    mode: 0644

@@ -1,5 +1,5 @@
 ---
-- name: Docker - Instar y configurar (con docker-compose)
+- name: Docker - Instalación + compose
   tags: docker
   block:
     - name: Docker - Instalar dependencias
@@ -13,27 +13,34 @@
           - lsb-release
         state: present
 
-    - name: Download Docker installation script if not exist
+    - name: Check Docker Installed
+      shell: which docker
+      register: docker_check
+      ignore_errors: true
+
+    # will install the latest version of docker
+    - name: Install Docker
+      shell: curl https://get.docker.com/ | sh
+      when: docker_check.rc == 1
+
+    - name: Setup Docker
+      shell: |
+        usermod -aG docker "{{ remote_regular_user }}"
+        systemctl enable docker
+        systemctl start docker
+      when: docker_check.rc == 1
+
+    - name: Docker - Instalar docker compose plugin
+      apt:
+        name:
+          - docker-compose-plugin
+        update_cache: "yes"
+        state: present
+
+    - name: Docker - Instalar docker-compose
       get_url:
-        url: https://get.docker.com/
-        dest: /tmp/install_docker.sh
-        validate_certs: no
-      when: not ansible.builtin.path.exists('/tmp/install_docker.sh')
-
-    - name: Run Docker installation script
-      become: true
-      script:
-        script: /tmp/install_docker.sh
-
-    - name: Docker - Ejecutar comandos como root
-      block:
-        - name: Docker - Crear grupo docker
-          group:
-            name: docker
-            state: present
-
-        - name: Docker - Agregar users al grupo
-          user:
-            name: "{{ remote_regular_user }}"
-            groups: ["docker"]
-            append: "yes"
+        url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+        owner: "{{ remote_regular_user }}"
+        group: "{{ remote_regular_user }}"
+        mode: "+x"

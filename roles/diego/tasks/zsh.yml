@@ -10,28 +10,26 @@
       vars:
         packages:
           - zsh
-          - zsh-autosuggestions
-          - zsh-syntax-highlighting
           - fonts-powerline
 
     - name: zsh - Set as default shell
       become: true
       shell: chsh -s $(which zsh) "{{ lookup('env','USER') }}"
 
-    - name: zsh - Copiar archivo de configuración
-      copy:
+    - name: zsh - Crear enlace simbólico para archivo de configuración
+      file:
         src: ./files/.zshrc
         dest: ~/.zshrc
         owner: "{{ lookup('env','USER') }}"
         group: "{{ lookup('env','USER') }}"
-        mode: "744"
+        state: link
 
-# https://github.com/ohmyzsh/ohmyzsh
-- name: omz - Instalar, configurar y plugins
+- name: omz y plugins varios
   tags: omz
   block:
+    # https://github.com/ohmyzsh/ohmyzsh
     - name: omz - Descargar script
-      #become_user: "{{ lookup('env','USER') }}"
+      become_user: "{{ remote_regular_user }}"
       get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
         dest: /tmp/omz_install.sh
@@ -39,24 +37,11 @@
         force: true
 
     - name: omz - Instalar
-      become_user: "{{ lookup('env','USER') }}"
+      become_user: "{{ remote_regular_user }}"
       script: /tmp/omz_install.sh --force
-
-    # https://github.com/cantino/mcfly
-    - name: mcfly - Descargar script
-      get_url:
-        url: https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
-        dest: /tmp/mcfly_install.sh
-        mode: "+x"
-        force: true
-
-    - name: mcfly - Instalar
-      become_user: "{{ lookup('env','USER') }}"
-      script: /tmp/mcfly_install.sh --force --git cantino/mcfly
 
     - name: omz - Clonar varios plugins
       git:
-        #become_user: "{{ lookup('env','USER') }}"
         repo: "{{ item.key }}"
         dest: "{{ item.value }}"
         clone: yes
@@ -64,22 +49,39 @@
       with_items:
         - {
             key: "https://github.com/zsh-users/zsh-syntax-highlighting.git",
-            value: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting",
+            value: "/home/{{ remote_regular_user }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting",
           }
         - {
             key: "https://github.com/zsh-users/zsh-autosuggestions",
-            value: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions",
+            value: "/home/{{ remote_regular_user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions",
           }
         - {
             key: "https://github.com/zsh-users/zsh-completions",
-            value: "~/.oh-my-zsh/custom}/plugins/zsh-completions",
+            value: "/home/{{ remote_regular_user }}/.oh-my-zsh/custom/plugins/zsh-completions",
+          }
+        - {
+            key: "https://github.com/ocadaruma/zsh-gcloud-prompt.git",
+            value: "/home/{{ remote_regular_user }}/.oh-my-zsh/custom/plugins/zsh-gcloud-prompt",
           }
 
-    # https://github.com/romkatv/powerlevel10k
-    - name: zsh - Powerlevel10k theme
-      git:
-        repo: https://github.com/romkatv/powerlevel10k.git
-        dest: ~/.oh-my-zsh/custom/themes/powerlevel10k
-        clone: true
-        update: true
-        depth: 1
+    # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/kube-ps1
+    - name: omz - Crear directorio kube-ps1
+      file:
+        path: /home/{{ remote_regular_user }}/.oh-my-zsh/custom/plugins/kube-ps1/
+        state: directory
+        mode: "0775"
+        owner: "{{ remote_regular_user }}"
+        group: "{{ remote_regular_user }}"
+
+    - name: omz - kube-ps1 plugin
+      get_url:
+        url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/kube-ps1/kube-ps1.plugin.zsh
+        dest: /home/{{ remote_regular_user }}/.oh-my-zsh/custom/plugins/kube-ps1/
+        mode: "0774"
+
+    - name: zsh - Recargar configuración de zsh
+      shell: source /home/{{ remote_regular_user }}/.zshrc
+      args:
+        executable: /bin/zsh
+      become_user: "{{ remote_regular_user }}"
+      changed_when: false

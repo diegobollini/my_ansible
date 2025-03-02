@@ -1,48 +1,48 @@
 ---
-- name: Browser - Instalar Google Chrome
-  tags: chrome
+- name: Browsers - Chrome
+  tags: browsers
+  become: true
   block:
-    - name: Browsers - Agregar la key de Chrome
-      become: true
-      apt_key:
-        url: https://dl.google.com/linux/linux_signing_key.pub
+    - name: Chrome - Chequear si ya existe key
+      stat:
+        path: /usr/share/keyrings/google-archive-keyring.gpg
+      register: keyring_file
 
-    - name: Browsers - Agregar repositorio de Chrome
-      become: true
-      apt_repository:
-        repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
-        filename: google-chrome
+    - name: Chrome - Agregar key
+      shell: wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-archive-keyring.gpg
+      when: not keyring_file.stat.exists
 
-    - name: Browsers - Instalar Google Chrome
-      become: true
+    - name: Chrome - Agregar repositorio
+      shell: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-archive-keyring.gpg] https://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list | apt update
+
+    - name: Chrome - Instalar
       apt:
         name: google-chrome-stable
 
-- name: Browsers - Instalar Firefox (no snap)
-  tags: firefox
-  block:
-    - name: Browsers - Dependencias Firefox
-      become: true
+    - name: Install Firefox
+      flatpak:
+        name: org.mozilla.firefox
+        state: present
+        remote: flathub
+
+    - name: Mullvad - Chequear si ya existe key
+      stat:
+        path: /usr/share/keyrings/mullvad-keyring.gpg
+      register: keyring_file
+
+    - name: Mullvad - Agregar key
+      shell: wget -q -O - https://repository.mullvad.net/deb/mullvad-keyring.asc | sudo gpg --dearmor -o /usr/share/keyrings/mullvad-keyring.gpg
+      when: not keyring_file.stat.exists
+
+    - name: Mullvad - Agregar repositorio
+      shell: echo "deb [signed-by=/usr/share/keyrings/mullvad-keyring.gpg arch=$( dpkg --print-architecture )] https://repository.mullvad.net/deb/stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/mullvad.list | apt update
+
+    - name: Mullvad - Instalar
       apt:
-        name: libdbus-glib-1-2:amd64
+        name: mullvad-browser
 
-    - name: Browsers - Descargar firefox
-      become: true
-      unarchive:
-        src: https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=es-ES
-        dest: /opt/
-        remote_src: yes
 
-    - name: Browsers - firefox symlink
-      become: true
-      file:
-        src: /opt/firefox/firefox
-        dest: /usr/local/bin/firefox
-        state: link
 
-    - name: Browsers - Lanzador firefox
-      become: true
-      get_url:
-        url: https://raw.githubusercontent.com/mozilla/sumo-kb/main/install-firefox-linux/firefox.desktop
-        dest: /usr/local/share/applications
-        mode: 0644
+
+# Download the Mullvad signing key
+sudo curl -fsSLo /usr/share/keyrings/mullvad-keyring.asc https://repository.mullvad.net/deb/mullvad-keyring.asc

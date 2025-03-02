@@ -45,15 +45,8 @@ Host github.com-adhoc
    User dbollini
    IdentityFile ~/.ssh/id_rsa
 
-# Multiserver Coopares
-Host coopares
-   HostName 167.172.244.253
-   Port 12022
-   User deploy
-   IdentityFile ~/.ssh/private_key_diego
-
 # Multiserver ARB / La Colifata
-Host server
+Host multiserver
    HostName 104.131.114.139
    #Port 12022
    User diego

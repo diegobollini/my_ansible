@@ -22,13 +22,14 @@
 
     - name: Tweaks - Instalar gnome extensions con script
       become_user: "{{ remote_regular_user }}"
-      script: /tmp/install-gnome-extensions.sh --overwrite --enable 19 517 744 779 1460 3518 3968
+      script: /tmp/install-gnome-extensions.sh --overwrite --enable 19 744 779 1319 3518 3968
       changed_when:
         false
         # https://extensions.gnome.org/extension/19/user-themes/
         # https://extensions.gnome.org/extension/517/caffeine/
         # https://extensions.gnome.org/extension/744/hide-activities-button/
         # https://extensions.gnome.org/extension/779/clipboard-indicator/
+        # https://extensions.gnome.org/extension/1319/gsconnect/
         # https://extensions.gnome.org/extension/1460/vitals/
         # https://extensions.gnome.org/extension/3518/transparent-shell/
         # https://extensions.gnome.org/extension/3968/improved-workspace-indicator/
