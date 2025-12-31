@@ -76,20 +76,12 @@
         state: present
       vars:
         packages:
-          - tlp
-          - tlp-rdw
           - acpi-call-dkms
           - powertop
           - preload
           - bleachbit
           - synaptic
           - nala
-
-    - name: Base - Activar tlp
-      ansible.builtin.service:
-        name: tlp.service
-        state: started
-        enabled: yes
   tags: packages_performance
 
 - name: Editor de texto, colorizer, terminal
