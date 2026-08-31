@@ -3,55 +3,61 @@
 ###############################################################################
 # Script Name: deploy.sh
 # Developer: Diego Bollini
-# Description: This script is used to setup ansible on a fresh installation of
-#              Ubuntu 22.04 in my personal notebook. It updates the system,
-#              installs ansible and git, and clone and apply an ansible role.
-# Technologies: Bash, Ubuntu, Ansible, Git, Python, Kubernetes
+# Description: Prepara una instalación fresca de Debian 13 (trixie) en mi
+#              notebook personal: actualiza el sistema, instala Ansible y
+#              git, clona este repositorio y aplica el playbook.
+# Technologies: Bash, Debian, Ansible, Git
 ###############################################################################
 
-# Actualizar sistema
+set -euo pipefail
+
+REPO_URL="https://github.com/diegobollini/my_ansible.git"
+PROJECTS_DIR="${HOME}/proyectos"
+PROJECT_DIR="${PROJECTS_DIR}/my_ansible"
+
 echo "[PREPARAR NOTEBOOK] ACTUALIZAR AMBIENTE DE TRABAJO"
 sudo apt-get -y update
 sudo apt-get -y upgrade
 
-# Instalar requerimientos
 echo "[PREPARAR NOTEBOOK] INSTALAR GIT Y STOW"
 sudo apt-get install -y git stow
 
-# Instalar dependencias de Ansible
-echo '[PREPARAR NOTEBOOK] INSTALAR DEPENDENCIAS'
+echo "[PREPARAR NOTEBOOK] INSTALAR DEPENDENCIAS"
 sudo apt-get install -y python3-setuptools
 
-# Instalar Ansible
 echo "[PREPARAR NOTEBOOK] INSTALAR ANSIBLE"
 sudo apt-get install -y ansible
 
-echo '[PREPARAR NOTEBOOK] NOTEBOOK LISTA!'
+echo "[PREPARAR NOTEBOOK] NOTEBOOK LISTA!"
 
-# Deploy projecto Ansible, implementación
 echo "[PROYECTO ANSIBLE] CLONAR REPOSITORIO"
 sudo touch /var/log/ansible.log
-sudo chown -R $USER:$USER /var/log/ansible.log
-mkdir /home/$USER/proyectos/
-git clone https://github.com/diegobollini/my_ansible.git /home/$USER/proyectos/my_ansible
-cd proyectos/my_ansible
+sudo chown "${USER}:${USER}" /var/log/ansible.log
+mkdir -p "${PROJECTS_DIR}"
 
-# Para ejecutar el rol base
+if [[ -d "${PROJECT_DIR}/.git" ]]; then
+    echo "El repositorio ya existe en ${PROJECT_DIR}, se omite el clone."
+else
+    git clone "${REPO_URL}" "${PROJECT_DIR}"
+fi
+
+cd "${PROJECT_DIR}"
+
+echo "[PROYECTO ANSIBLE] INSTALAR COLECCIONES DE ANSIBLE GALAXY"
+ansible-galaxy collection install -r requirements.yml
+
 function launch {
-    read -e -p "COMENZAR IMPLEMENTACIÓN? ( 'si', 'no' ): " LAUNCH_OPTION
+    read -r -e -p "COMENZAR IMPLEMENTACIÓN? ( 'si', 'no' ): " LAUNCH_OPTION
 
     while [[ "$LAUNCH_OPTION" != "si" && "$LAUNCH_OPTION" != "no" ]]; do
-        read -e -p "Por favor seleccionar una opción correcta ( 'si', 'no' ): " LAUNCH_OPTION
+        read -r -e -p "Por favor seleccionar una opción correcta ( 'si', 'no' ): " LAUNCH_OPTION
     done
 
     if [[ "$LAUNCH_OPTION" == "si" ]]; then
         ansible-playbook playbooks/notebook.yml -K --verbose
+    else
+        echo "Gracias por lanzar el proyecto, ver README.md para más información."
     fi
-
-    if [[ "$LAUNCH_OPTION" == "no" ]]; then
-        read -e -p "Gracias por lanzar el proyecto, ver README.md para más información."
-    fi
-
 }
 
 launch

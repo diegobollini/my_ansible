@@ -1,60 +1,23 @@
+# Hosts privados (IPs, usuarios y puertos de servidores propios) van en un
+# archivo aparte que NO se versiona en este repo público. Si no existe, el
+# playbook lo crea vacío (ver ssh.yml) para que este Include no falle.
+Include ~/.ssh/config.local
+
 Include /etc/ssh/ssh_config.d/*.conf
 
 Host *
-#   ForwardAgent no
-#   ForwardX11 no
-#   ForwardX11Trusted yes
-#   PasswordAuthentication yes
-#   HostbasedAuthentication no
-#   GSSAPIAuthentication no
-#   GSSAPIDelegateCredentials no
-#   GSSAPIKeyExchange no
-#   GSSAPITrustDNS no
-#   BatchMode no
-#   CheckHostIP yes
-#   AddressFamily any
-#   ConnectTimeout 0
-#   StrictHostKeyChecking ask
-#   IdentityFile ~/.ssh/id_rsa
-#   IdentityFile ~/.ssh/id_dsa
-#   IdentityFile ~/.ssh/id_ecdsa
-#   IdentityFile ~/.ssh/id_ed25519
-#   Port 22
-#   Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc
-#   MACs hmac-md5,hmac-sha1,umac-64@openssh.com
-#   EscapeChar ~
-#   Tunnel no
-#   TunnelDevice any:any
-#   PermitLocalCommand no
-#   VisualHostKey no
-#   ProxyCommand ssh -q -W %h:%p gateway.example.com
-#   RekeyLimit 1G 1h
     SendEnv LANG LC_*
     HashKnownHosts yes
     GSSAPIAuthentication yes
 
-# Default, personal, global - Bolli
+# Personal
 Host github.com
-   HostName github.com
-   User diegobollini
-   IdentityFile ~/.ssh/private_key_diego
+    HostName github.com
+    User diegobollini
+    IdentityFile ~/.ssh/private_key_diego
 
 # Work
 Host github.com-adhoc
-   HostName github.com
-   User dbollini
-   IdentityFile ~/.ssh/id_rsa
-
-# Multiserver Coopares
-Host coopares
-   HostName 167.172.244.253
-   Port 12022
-   User deploy
-   IdentityFile ~/.ssh/private_key_diego
-
-# Multiserver ARB / La Colifata
-Host server
-   HostName 104.131.114.139
-   #Port 12022
-   User diego
-   IdentityFile ~/.ssh/private_key_diego
+    HostName github.com
+    User dbollini
+    IdentityFile ~/.ssh/id_rsa

@@ -1,14 +1,42 @@
 ---
-- name: Social - Instalar telegram desktop
+# telegram-desktop no está empaquetado en los repos de Debian: se instala
+# desde el tarball oficial de tdesktop.
+- name: Social - Instalar Telegram Desktop
   tags: telegram
-  become: true
-  apt:
-    name: telegram-desktop
-    state: present
+  block:
+    - name: Telegram - Instalar dependencia (xz-utils)
+      ansible.builtin.apt:
+        name: xz-utils
+        state: present
 
-- name: Social - Instalar discord
+    - name: Telegram - Descargar y extraer
+      ansible.builtin.unarchive:
+        src: https://telegram.org/dl/desktop/linux
+        dest: /opt/
+        remote_src: true
+        creates: /opt/Telegram/Telegram
+
+    - name: Telegram - Symlink al binario
+      ansible.builtin.file:
+        src: /opt/Telegram/Telegram
+        dest: /usr/local/bin/telegram
+        state: link
+
+    - name: Telegram - Lanzador de escritorio
+      ansible.builtin.copy:
+        dest: /usr/local/share/applications/telegram-desktop.desktop
+        mode: "0644"
+        content: |
+          [Desktop Entry]
+          Name=Telegram Desktop
+          Comment=Telegram Desktop messaging app
+          Exec=/usr/local/bin/telegram -- %u
+          Terminal=false
+          Type=Application
+          Categories=Network;InstantMessaging;
+          MimeType=x-scheme-handler/tg;
+
+- name: Social - Instalar Discord (no está empaquetado en los repos de Debian)
   tags: discord
-  become: true
-  apt:
-    name: discord
-    state: present
+  ansible.builtin.apt:
+    deb: https://discord.com/api/download?platform=linux&format=deb

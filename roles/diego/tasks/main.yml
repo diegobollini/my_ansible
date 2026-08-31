@@ -1,19 +1,34 @@
 ---
-- include_vars: ./vars.yml
-
-- block:
-  - import_tasks: packages.yml
-  - import_tasks: browsers.yml
-  - import_tasks: language.yml
-  - import_tasks: social.yml
-  - import_tasks: appearence.yml
-  - import_tasks: ssh.yml
-  - import_tasks: code.yml
-  - import_tasks: python.yml
-  - import_tasks: docker.yml
-  - import_tasks: git.yml
-  - import_tasks: meld.yml
-  - import_tasks: zsh.yml
-  - import_tasks: security.yml
-  - import_tasks: network.yml
-  - import_tasks: tweaks.yml
+# vars/main.yml se carga automáticamente por convención de Ansible
+- name: Aplicar rol diego
+  block:
+    - name: Importar packages.yml
+      ansible.builtin.import_tasks: packages.yml
+    - name: Importar browsers.yml
+      ansible.builtin.import_tasks: browsers.yml
+    - name: Importar language.yml
+      ansible.builtin.import_tasks: language.yml
+    - name: Importar social.yml
+      ansible.builtin.import_tasks: social.yml
+    - name: Importar appearence.yml
+      ansible.builtin.import_tasks: appearence.yml
+    - name: Importar ssh.yml
+      ansible.builtin.import_tasks: ssh.yml
+    - name: Importar code.yml
+      ansible.builtin.import_tasks: code.yml
+    - name: Importar python.yml
+      ansible.builtin.import_tasks: python.yml
+    - name: Importar docker.yml
+      ansible.builtin.import_tasks: docker.yml
+    - name: Importar git.yml
+      ansible.builtin.import_tasks: git.yml
+    - name: Importar meld.yml
+      ansible.builtin.import_tasks: meld.yml
+    - name: Importar zsh.yml
+      ansible.builtin.import_tasks: zsh.yml
+    - name: Importar security.yml
+      ansible.builtin.import_tasks: security.yml
+    - name: Importar network.yml
+      ansible.builtin.import_tasks: network.yml
+    - name: Importar tweaks.yml
+      ansible.builtin.import_tasks: tweaks.yml

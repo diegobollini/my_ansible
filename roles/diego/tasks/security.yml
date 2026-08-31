@@ -3,7 +3,7 @@
   tags: ufw
   block:
     - name: Instalar UFW
-      apt:
+      ansible.builtin.apt:
         name: "{{ packages }}"
         state: present
       vars:
@@ -12,31 +12,48 @@
           - gufw
 
     - name: Bloquear todas las conexiones entrantes
-      ufw:
+      community.general.ufw:
         rule: deny
         direction: in
 
-    - name: Allow outgoing SSH connections
-      ufw:
+    - name: Permitir salida SSH
+      community.general.ufw:
         rule: allow
         direction: out
-        port: 22
+        port: "22"
         proto: tcp
 
-    - name: Allow outgoing HTTP and HTTPS traffic
-      ufw:
+    - name: Permitir salida HTTP
+      community.general.ufw:
         rule: allow
         direction: out
-        port: 80
+        port: "80"
         proto: tcp
 
-    - name: Allow outgoing HTTP and HTTPS traffic
-      ufw:
+    - name: Permitir salida HTTPS
+      community.general.ufw:
         rule: allow
         direction: out
-        port: 443
+        port: "443"
         proto: tcp
+
+    - name: Permitir salida DNS
+      community.general.ufw:
+        rule: allow
+        direction: out
+        port: "53"
+        proto: "{{ item }}"
+      loop:
+        - tcp
+        - udp
+
+    - name: Permitir salida NTP
+      community.general.ufw:
+        rule: allow
+        direction: out
+        port: "123"
+        proto: udp
 
     - name: Activar UFW
-      ufw:
+      community.general.ufw:
         state: enabled

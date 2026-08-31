@@ -1,10 +1,10 @@
 ---
 # Para instalar zsh y omz. La idea es usar stow y dotfiles para el resto de la configuración, theme, plugins, etc.
-- name: zsh - Instalar y configurar
+- name: Zsh - Instalar y configurar
   tags: zsh
   block:
-    - name: zsh - Instalar
-      apt:
+    - name: Zsh - Instalar
+      ansible.builtin.apt:
         name: "{{ packages }}"
         state: present
       vars:
@@ -14,72 +14,72 @@
           - zsh-syntax-highlighting
           - fonts-powerline
 
-    - name: zsh - Set as default shell
-      become: true
-      shell: chsh -s $(which zsh) "{{ lookup('env','USER') }}"
+    - name: Zsh - Set as default shell
+      ansible.builtin.user:
+        name: "{{ diego_remote_regular_user }}"
+        shell: /usr/bin/zsh
 
-    - name: zsh - Copiar archivo de configuración
-      copy:
+    - name: Zsh - Copiar archivo de configuración
+      become: true
+      become_user: "{{ diego_remote_regular_user }}"
+      ansible.builtin.copy:
         src: ./files/.zshrc
-        dest: ~/.zshrc
-        owner: "{{ lookup('env','USER') }}"
-        group: "{{ lookup('env','USER') }}"
-        mode: "744"
+        dest: "{{ diego_remote_home }}/.zshrc"
+        mode: "0644"
 
 # https://github.com/ohmyzsh/ohmyzsh
-- name: omz - Instalar, configurar y plugins
+- name: Omz - Instalar, configurar y plugins
   tags: omz
+  become: true
+  become_user: "{{ diego_remote_regular_user }}"
   block:
-    - name: omz - Descargar script
-      become_user: "{{ lookup('env','USER') }}"
-      get_url:
+    - name: Omz - Descargar script
+      ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
         dest: /tmp/omz_install.sh
-        mode: "+x"
+        mode: "0755"
         force: true
 
-    - name: omz - Instalar
-      become_user: "{{ lookup('env','USER') }}"
-      script: /tmp/omz_install.sh --force
+    - name: Omz - Instalar (si no está instalado)
+      ansible.builtin.script: /tmp/omz_install.sh --unattended
+      args:
+        creates: "{{ diego_remote_home }}/.oh-my-zsh"
 
     # https://github.com/cantino/mcfly
-    - name: mcfly - Descargar script
-      get_url:
+    - name: Mcfly - Descargar script
+      ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
         dest: /tmp/mcfly_install.sh
-        mode: "+x"
+        mode: "0755"
         force: true
 
-    - name: mcfly - Instalar
-      become_user: "{{ lookup('env','USER') }}"
-      script: /tmp/mcfly_install.sh --force --git cantino/mcfly
+    - name: Mcfly - Asegurar ~/.local/bin
+      ansible.builtin.file:
+        path: "{{ diego_remote_home }}/.local/bin"
+        state: directory
+        mode: "0755"
 
-    - name: omz - Clonar varios plugins
-      git:
-        become_user: "{{ lookup('env','USER') }}"
+    - name: Mcfly - Instalar (si no está instalado)
+      ansible.builtin.script: /tmp/mcfly_install.sh --git cantino/mcfly --to {{ diego_remote_home }}/.local/bin
+      args:
+        creates: "{{ diego_remote_home }}/.local/bin/mcfly"
+
+    - name: Omz - Clonar varios plugins
+      ansible.builtin.git: # noqa: latest
         repo: "{{ item.key }}"
-        dest: "{{ item.value }}"
-        clone: yes
-        update: yes
+        dest: "{{ diego_remote_home }}/.oh-my-zsh/custom/plugins/{{ item.value }}"
+        clone: true
+        update: true
       with_items:
-        - {
-            key: "https://github.com/zsh-users/zsh-syntax-highlighting.git",
-            value: "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting",
-          }
-        - {
-            key: "https://github.com/zsh-users/zsh-autosuggestions",
-            value: "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions",
-          }
-        - {
-            key: "https://github.com/zsh-users/zsh-completions",
-            value: "~/.oh-my-zsh/custom}/plugins/zsh-completions",
-          }
+        - { key: "https://github.com/zsh-users/zsh-syntax-highlighting.git", value: zsh-syntax-highlighting }
+        - { key: "https://github.com/zsh-users/zsh-autosuggestions", value: zsh-autosuggestions }
+        - { key: "https://github.com/zsh-users/zsh-completions", value: zsh-completions }
 
     # https://github.com/romkatv/powerlevel10k
-    - name: zsh - Powerlevel10k theme
-      git:
+    - name: Zsh - Powerlevel10k theme
+      ansible.builtin.git: # noqa: latest
         repo: https://github.com/romkatv/powerlevel10k.git
-        dest: ~/.oh-my-zsh/custom/themes/powerlevel10k
+        dest: "{{ diego_remote_home }}/.oh-my-zsh/custom/themes/powerlevel10k"
         clone: true
         update: true
         depth: 1

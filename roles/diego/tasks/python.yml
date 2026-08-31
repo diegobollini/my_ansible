@@ -1,14 +1,13 @@
 ---
 - name: Python3 - Instalar dependencias y paquetes
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
     packages:
+      - python3
       - ipython3
       - python3-setuptools
-      - python3-pip-whl
       - python3-pip
       - pylint
-      - python3
   tags: python3

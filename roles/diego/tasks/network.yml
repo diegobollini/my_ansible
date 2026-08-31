@@ -1,8 +1,9 @@
 ---
 - name: Set custom DNS servers in Network Manager
   tags: dns
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/NetworkManager/NetworkManager.conf
     regexp: "^dns=.*"
-    line: "dns=8.8.8.8,1.1.1.1"
+    line: "dns={{ diego_dns_servers }}"
     state: present
+  notify: Restart NetworkManager

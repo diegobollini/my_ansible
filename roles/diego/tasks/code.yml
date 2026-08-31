@@ -1,12 +1,14 @@
 ---
 - name: Visual Studio Code - Instalar y configurar
+  tags: code
   block:
     - name: Visual Studio Code - Descargar e instalar
-      apt:
+      ansible.builtin.apt:
         deb: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
       when: ansible_userspace_architecture == 'x86_64'
 
     - name: Visual Studio Code - Definir como editor de texto predeterminado
-      become_user: "{{ remote_regular_user }}"
-      command: "xdg-mime default code.desktop application/x-shellscript text/plain text/markdown application/x-yaml text/x-python"
-  tags: code
+      become: true
+      become_user: "{{ diego_remote_regular_user }}"
+      ansible.builtin.command: "xdg-mime default code.desktop application/x-shellscript text/plain text/markdown application/x-yaml text/x-python"
+      changed_when: false

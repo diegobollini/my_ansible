@@ -1,28 +1,30 @@
 ---
 - name: SSH - Key y config
   tags: ssh
+  become: true
+  become_user: "{{ diego_remote_regular_user }}"
   block:
-    - name: SSH - Crear directorios si no existen
-      become: true
-      file:
-        path: "{{ item }}"
+    - name: SSH - Crear ~/.ssh si no existe
+      ansible.builtin.file:
+        path: "{{ diego_remote_home }}/.ssh"
         state: directory
-      with_items:
-        - "{{ ansible_env.HOME }}/.ssh"
-        - "{{ ansible_env.HOME }}/.ssh/config"
+        mode: "0700"
 
     - name: SSH - Copiar llave pública
-      copy:
+      ansible.builtin.copy:
         src: ./files/private_key_diego.pub
-        dest: /home/{{ lookup('env','USER') }}/.ssh/private_key_diego.pub
-        owner: "{{ lookup('env','USER') }}"
-        group: "{{ lookup('env','USER') }}"
-        mode: 744
+        dest: "{{ diego_remote_home }}/.ssh/private_key_diego.pub"
+        mode: "0644"
 
-    - name: SSH - Copiar configuraciones de sshconfig
-      copy:
+    - name: SSH - Copiar configuración base (versionada)
+      ansible.builtin.copy:
         src: ./files/ssh_config
-        dest: /home/{{ lookup('env','USER') }}/.ssh/config
-        owner: "{{ lookup('env','USER') }}"
-        group: "{{ lookup('env','USER') }}"
-        mode: 744
+        dest: "{{ diego_remote_home }}/.ssh/config"
+        mode: "0644"
+
+    - name: SSH - Crear config.local si no existe (hosts privados, no versionado)
+      ansible.builtin.copy:
+        content: "# Hosts privados propios de esta máquina. No se versiona en git.\n"
+        dest: "{{ diego_remote_home }}/.ssh/config.local"
+        mode: "0600"
+        force: false

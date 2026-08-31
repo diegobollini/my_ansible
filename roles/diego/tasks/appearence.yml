@@ -1,95 +1,62 @@
 ---
 - name: Apariencia - Wallpaper
   tags: appearence_wallpaper
+  become: true
+  become_user: "{{ diego_remote_regular_user }}"
   block:
-    - name: Apariencia - Copiar wallpaper y lockscreenfile
-      become_user: "{{ lookup('env','USER') }}"
-      copy:
+    - name: Apariencia - Asegurar que ~/Pictures existe
+      ansible.builtin.file:
+        path: "{{ diego_remote_home }}/Pictures"
+        state: directory
+        mode: "0755"
+
+    - name: Apariencia - Copiar wallpaper y lockscreen
+      ansible.builtin.copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
+        mode: "0644"
       with_items:
-        - {
-            src: ./files/wallpaper01.jpg,
-            dest: "/home/{{ lookup('env','USER') }}/Pictures/wallpaper01.jpg",
-          }
-        - {
-            src: ./files/wallpaper02.jpg,
-            dest: "/home/{{ lookup('env','USER') }}/Pictures/wallpaper02.jpg",
-          }
-        - {
-            src: ./files/profile_picture.jpg,
-            dest: "/home/{{ lookup('env','USER') }}/Pictures/profile_picture.jpg",
-          }
+        - { src: ./files/wallpaper01.jpg, dest: "{{ diego_remote_home }}/Pictures/wallpaper01.jpg" }
+        - { src: ./files/wallpaper02.jpg, dest: "{{ diego_remote_home }}/Pictures/wallpaper02.jpg" }
+        - { src: ./files/profile_picture.jpg, dest: "{{ diego_remote_home }}/Pictures/profile_picture.jpg" }
 
     - name: Apariencia - Set Wallpaper
-      become_user: "{{ lookup('env','USER') }}"
-      dconf:
+      community.general.dconf:
         key: "/org/gnome/desktop/background/picture-uri"
-        value: "'file:///home/{{ lookup('env','USER') }}/Pictures/wallpaper01.jpg'"
+        value: "'file://{{ diego_remote_home }}/Pictures/wallpaper01.jpg'"
         state: present
 
     - name: Apariencia - Set screensaver picture
-      become_user: "{{ lookup('env','USER') }}"
-      dconf:
+      community.general.dconf:
         key: "/org/gnome/desktop/screensaver/picture-uri"
-        value: "'file:///home/{{ lookup('env','USER') }}/Pictures/wallpaper02.jpg'"
+        value: "'file://{{ diego_remote_home }}/Pictures/wallpaper02.jpg'"
         state: present
 
     - name: Apariencia - Set back position
-      become_user: "{{ lookup('env','USER') }}"
-      dconf:
+      community.general.dconf:
         key: "/org/gnome/desktop/background/picture-options"
         value: "'zoom'"
         state: present
 
 - name: Apariencia - Gnome
   tags: appearence_gnome
+  become: true
+  become_user: "{{ diego_remote_regular_user }}"
   block:
     - name: Apariencia - Instalar numix icon pack
-      apt:
-        name:
-          - numix-icon-theme-circle
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        name: numix-icon-theme-circle
         state: present
 
     - name: Apariencia - Personalizaciones de gnome
-      become_user: "{{ lookup('env','USER') }}"
-      dconf:
+      community.general.dconf:
         key: "{{ item.key }}"
         value: "{{ item.value }}"
         state: present
       with_items:
-        - {
-            key: "/org/gnome/desktop/interface/clock-show-seconds",
-            value: "'false'",
-          }
-        - {
-            key: "/org/gnome/desktop/interface/enable-animations",
-            value: "'false'",
-          }
-        # gsettings get org.gnome.desktop.interface gtk-theme
-        # - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
-        # - { key: "/org/gnome/desktop/interface/cursor-theme", value: "'DMZ-Black'" }
-        - {
-            key: "/org/gnome/desktop/interface/icon-theme",
-            value: "'Numix-Circle'",
-          }
-        # Determina si el cambio entre áreas de trabajo debería suceder para las ventanas en todos los monitores o sólo para ventanas en el monitor primario.
-        - {
-            key: "/org/gnome/mutter/workspaces-only-on-primary",
-            value: "'true'",
-          }
-
-    - name: Apariencia - Theme (ubuntu)
-      when: ansible_distribution == 'Ubuntu'
-      become_user: "{{ lookup('env','USER') }}"
-      dconf:
-        key: "{{ item.key }}"
-        value: "{{ item.value }}"
-        state: present
-      with_items:
-        # gsettings get org.gnome.desktop.interface gtk-theme
-        - { key: "/org/gnome/desktop/interface/gtk-theme", value: "'Arc'" }
-        - {
-            key: "/org/gnome/desktop/interface/cursor-theme",
-            value: "'DMZ-Black'",
-          }
+        - { key: "/org/gnome/desktop/interface/clock-show-seconds", value: "false" }
+        - { key: "/org/gnome/desktop/interface/enable-animations", value: "false" }
+        - { key: "/org/gnome/desktop/interface/icon-theme", value: "'Numix-Circle'" }
+        - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "true" }

@@ -1,0 +1,32 @@
+---
+# Usuario genérico para ejecutar algunas tareas (dueño real de la sesión, no root)
+diego_remote_regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+diego_remote_home: "/home/{{ diego_remote_regular_user }}"
+
+# git
+diego_git_user_name: diegobollini
+diego_git_user_email: diegobollini@protonmail.com
+
+# idioma / locale
+diego_locale_target: es_ES.UTF-8
+diego_keyboard_layout: es
+
+# DNS
+diego_dns_servers: "8.8.8.8,1.1.1.1"
+
+# GNOME Shell extensions (https://extensions.gnome.org/extension/<id>/)
+diego_gnome_extension_ids:
+  - 19 # user-themes
+  - 517 # caffeine
+  - 744 # hide-activities-button
+  - 779 # clipboard-indicator
+  - 1460 # vitals
+  - 3518 # transparent-shell
+  - 3968 # improved-workspace-indicator
+
+diego_gnome_favorite_apps:
+  - google-chrome.desktop
+  - org.gnome.Nautilus.desktop
+  - code.desktop
+  - org.gnome.Terminal.desktop
+  - org.gnome.Flameshot.desktop

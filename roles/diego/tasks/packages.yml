@@ -1,6 +1,18 @@
 ---
-- name: Base - Instalar paquetes de sistema, drivers
-  apt:
+# unrar/p7zip-rar viven en "non-free" y ttf-mscorefonts-installer en "contrib".
+# El instalador de Debian los deja sin habilitar por defecto.
+- name: Paquetes - Verificar que los componentes contrib/non-free estén habilitados
+  ansible.builtin.command: "apt-cache policy {{ item }}"
+  register: diego_component_check
+  changed_when: false
+  failed_when: diego_component_check.stdout | trim | length == 0
+  loop:
+    - ttf-mscorefonts-installer
+    - unrar
+  tags: [packages, packages_other, packages_compression]
+
+- name: Base - Instalar paquetes de sistema
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -8,21 +20,19 @@
       - htop
       - mc
       - tmux
-      - ubuntu-restricted-extras
       - apt-transport-https
       - curl
       - wget
       - openssh-client
       - openssh-server
       - jq
-      - tldr
-      - ppa-purge
-      - locate
+      - tldr-py
+      - plocate
       - libxshmfence1
-  tags: packages_system
+  tags: [packages, packages_system]
 
 - name: Base - Utilidades de compresión
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -34,10 +44,18 @@
       - unzip
       - p7zip-full
       - p7zip-rar
-  tags: packages_compression
+  tags: [packages, packages_compression]
+
+- name: Base - Aceptar licencia de mscorefonts de forma no interactiva
+  ansible.builtin.debconf:
+    name: ttf-mscorefonts-installer
+    question: msttcorefonts/accepted-mscorefonts-eula
+    value: "true"
+    vtype: select
+  tags: [packages, packages_other]
 
 - name: Base - Instalar otras aplicaciones
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -47,54 +65,50 @@
       - ufw
       - vlc
       - ffmpeg
+      - libavcodec-extra
+      - ttf-mscorefonts-installer
       - transmission-gtk
-      - indicator-multiload
       - flameshot
-  tags: packages_other
+  tags: [packages, packages_other]
 
 - name: Base - Análisis de Hardware, información del sistema
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
     packages:
-      - htop
       - inxi
       - hwinfo
       - glances
       - mtr
-      - hardinfo
-      - stacer
+      - hardinfo2
       - screenfetch
-  tags: packages_hardware
+  tags: [packages, packages_hardware]
 
-- name: Base - Performance y  rendimiento de batería
-  block:
-    - name: Base - Instalar paquetes performance y  rendimiento de batería
-      apt:
-        name: "{{ packages }}"
-        state: present
-      vars:
-        packages:
-          - acpi-call-dkms
-          - powertop
-          - preload
-          - bleachbit
-          - synaptic
-          - nala
-  tags: packages_performance
+- name: Base - Performance y rendimiento de batería
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - powertop
+      - acpi-call-dkms
+      - preload
+      - bleachbit
+      - synaptic
+      - nala
+  tags: [packages, packages_performance]
 
 - name: Editor de texto, colorizer, terminal
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
     packages:
       - ccze
-      - tmux
       - tmuxp
       - xclip
       - bash-completion
       - yakuake
       - fonts-firacode
-  tags: packages_dev
+  tags: [packages, packages_dev]

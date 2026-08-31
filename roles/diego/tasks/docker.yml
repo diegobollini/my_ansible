@@ -1,46 +1,47 @@
 ---
-- name: Docker - Instar y configurar (con docker-compose)
+- name: Docker - Instalar y configurar (con docker compose)
   tags: docker
   block:
     - name: Docker - Instalar dependencias
-      apt:
+      ansible.builtin.apt:
         name:
-          - apt-transport-https
           - ca-certificates
           - curl
-          - gnupg-agent
-          - software-properties-common
-          - lsb-release
         state: present
 
-    - name: Docker - Agregar GPG
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+    - name: Docker - Descargar y volcar clave GPG (dearmor)
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /tmp/docker.asc
+        mode: "0644"
+
+    - name: Docker - Dearmor clave GPG
+      ansible.builtin.command: gpg --yes --dearmor --output /usr/share/keyrings/docker-keyring.gpg /tmp/docker.asc
+      args:
+        creates: /usr/share/keyrings/docker-keyring.gpg
 
     - name: Docker - Agregar repositorio
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
-        state: present
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [arch=amd64 signed-by=/usr/share/keyrings/docker-keyring.gpg]
+          https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
         filename: docker
 
     - name: Docker - Instalar docker y docker compose plugin
-      apt:
+      ansible.builtin.apt:
         name:
           - docker-ce
           - docker-compose-plugin
-        update_cache: "yes"
+        update_cache: true
         state: present
 
-    - name: Docker - Ejecutar comandos como root
-      block:
-        - name: Docker - Crear grupo docker
-          group:
-            name: docker
-            state: present
+    - name: Docker - Crear grupo docker
+      ansible.builtin.group:
+        name: docker
+        state: present
 
-        - name: Docker - Agregar users al grupo
-          user:
-            name: "{{ remote_regular_user }}"
-            groups: ["docker"]
-            append: "yes"
+    - name: Docker - Agregar usuario al grupo docker
+      ansible.builtin.user:
+        name: "{{ diego_remote_regular_user }}"
+        groups: ["docker"]
+        append: true
